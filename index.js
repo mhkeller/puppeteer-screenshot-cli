@@ -1,9 +1,13 @@
 #!/usr/bin/env node
 
 const puppeteer = require('puppeteer');
+const io        = require('indian-ocean');
 const EOL       = '\n';
+const t         = '%s';
 
 const argsDef = [
+  { name: 'list',     alias: 'l', type: String,  description: 'File path that contains a list of urls. Use -k or --key if key is not `url`' + EOL, defaultOption: false },
+  { name: 'key',      alias: 'k', type: String,  description: 'URL to navigate page to. The url should include scheme, e.g. https://.' + EOL, defaultValue: 'url' },
   { name: 'url',      alias: 'u', type: String,  description: 'URL to navigate page to. The url should include scheme, e.g. https://.' + EOL, defaultOption: true },
   { name: 'output',   alias: 'o', type: String,  description: 'The file path to save the image to. If path is a relative path, then it is resolved relative to current working directory. If no path is provided, the image won\'t be saved to the disk.' + EOL },
   { name: 'selector', alias: 's', type: String,  description: 'A CSS selector of an element to wait for. \n[italic]{Default: body}' + EOL },
@@ -20,7 +24,8 @@ const argsDef = [
 const args  = require('command-line-args')(argsDef);
 const usage = require('command-line-usage')({ header: 'Headless screenshot with Puppeteer', optionList: argsDef });
 
-const doCapture = async function ({
+let count = 0;
+async function doCapture({
   url,
   output,
   type,
@@ -47,6 +52,10 @@ const doCapture = async function ({
     output  = output === '-' ? undefined : output;
     type    = type === 'jpg' ? 'jpeg' : type;
 
+    if (output.indexOf(t) > -1) {
+      output = output.replace(t, count++);
+    }
+
     const picture = await page.screenshot({
       type, quality, fullPage,
       path: output,
@@ -64,13 +73,22 @@ const doCapture = async function ({
   }
 
   await browser.close();
-};
+}
 
-
-if (args.help || !args.url) {
+if (args.help || (!args.url && !args.list)) {
   !args.help && process.stderr.write('No url provided.' + EOL);
   process.stderr.write(usage);
   process.exitCode = 1;
 } else {
-  doCapture(args);
+  if (args.list) {
+    for (const row of io.readDataSync(args.list)) {
+      if (!row[args.key]) {
+        process.stderr.write(`No url for key: ${args.key}.` + EOL);
+      } else {
+        doCapture(Object.assign({url: row[args.key]}, args));
+      }
+    }
+  } else {
+    doCapture(args);
+  }
 }

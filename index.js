@@ -2,6 +2,7 @@
 
 const puppeteer = require('puppeteer');
 const io        = require('indian-ocean');
+const chalk     = require('chalk');
 const EOL       = '\n';
 const t         = '%s';
 
@@ -34,11 +35,13 @@ async function doCapture({
   selector = 'body',
   width    = 800,
   height   = 600,
-  timeout  = 30000,
+  timeout  = 90000,
   fullPage = false,
 }) {
   const browser = await puppeteer.launch({ headless: !noheadless });
   const page    = await browser.newPage();
+
+  process.stdout.write(chalk.magenta('Visiting...') + ' ' + url);
 
   page.setDefaultNavigationTimeout(timeout);
 
@@ -73,22 +76,27 @@ async function doCapture({
   }
 
   await browser.close();
+  process.stdout.write(chalk.green(' ✓') + EOL);
 }
 
-if (args.help || (!args.url && !args.list)) {
-  !args.help && process.stderr.write('No url provided.' + EOL);
-  process.stderr.write(usage);
-  process.exitCode = 1;
-} else {
-  if (args.list) {
-    for (const row of io.readDataSync(args.list)) {
-      if (!row[args.key]) {
-        process.stderr.write(`No url for key: ${args.key}.` + EOL);
-      } else {
-        doCapture(Object.assign({url: row[args.key]}, args));
-      }
-    }
+async function start () {
+  if (args.help || (!args.url && !args.list)) {
+    !args.help && process.stderr.write('No url provided.' + EOL);
+    process.stderr.write(usage);
+    process.exitCode = 1;
   } else {
-    doCapture(args);
+    if (args.list) {
+      for (const row of io.readDataSync(args.list)) {
+        if (!row[args.key]) {
+          process.stderr.write(`No url for key: ${args.key}.` + EOL);
+        } else {
+          await doCapture(Object.assign({url: row[args.key]}, args));
+        }
+      }
+    } else {
+      doCapture(args);
+    }
   }
 }
+
+start();

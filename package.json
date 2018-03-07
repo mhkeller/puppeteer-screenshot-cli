@@ -22,7 +22,6 @@
     "command-line-args": "~5.0.2",
     "command-line-usage": "~4.1.0",
     "indian-ocean": "^3.0.2",
-    "npm": "^5.7.1",
     "puppeteer": "~1.0.0"
   },
   "scripts": {

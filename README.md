@@ -2,6 +2,14 @@
 
 Simple wrapper around [Puppeteer](https://github.com/GoogleChrome/puppeteer) to take screenshot from command line.
 
+## What's in this fork?
+
+Adds the following options
+
+* `--list` will load a list of urls from a newline-delimited text file
+* `--delay` will wait a specified amount of time before taking the screenshot
+* `--scroll` will scroll to the bottom of the page before taking the screenshot. This is useful for infinite scroll style pages.
+
 ## Usage
 
 ```shell
@@ -16,41 +24,47 @@ puppeteer-screenshot 'http://perdu.com' > perdu.jpg
 ### Options
 
 ```
-  Headless screenshot with Puppeteer
+Headless screenshot with Puppeteer
 
-    -u, --url string        URL to navigate page to. The url should include scheme, e.g. https://.
+  -l, --list string       File path that contains a list of urls.
 
-    -o, --output string     The file path to save the image to. If path is a relative path, then it is
-                            resolved relative to current working directory. If no path is provided, the
-                            image won't be saved to the disk.
+  -u, --url string        URL to navigate page to. The url should include scheme, e.g. https://.
 
-    -s, --selector string   A CSS selector of an element to wait for.
-                            Default: body
+  -o, --output string     The file path to save the image to. If path is a relative path, then it is
+                          resolved relative to current working directory. If no path is provided, the
+                          image won't be saved to the disk.
 
-    -t, --type string       Specify screenshot type, can be either jpeg or png.
-                            Default: png
+  -s, --selector string   A CSS selector of an element to wait for.
+                          Default: body
 
-    -q, --quality number    The quality of the image, between 0-100. Not applicable to png images.
+  -t, --type string       Specify screenshot type, can be either jpeg or png.
+                          Default: png
 
-    -w, --width number      Viewport width in pixels
-                            Default: 800
+  -q, --quality number    The quality of the image, between 0-100. Not applicable to png images.
 
-    -h, --height number     Viewport height in pixels
-                            Default: 600
+  -w, --width number      Viewport width in pixels
+                          Default: 800
 
-    --timeout  number       Maximum time to wait for in milliseconds.
-                            Default: 30000
+  -h, --height number     Viewport height in pixels
+                          Default: 600
 
-    -f, --fullPage          When true, takes a screenshot of the full scrollable page.
-                            Defaults: false.
+  -d, --delay number      Time to wait (milliseconds) before screenshot is taken.{Default: 0}
 
-    --headless              Whether to run browser in headless mode.
-                            Default: true
+  --timeout number        Maximum time to wait for in milliseconds.
+                          Default: 30000
 
-    -?, --help              This help
+  --scroll                Scroll to the bottom of the page.
+
+  -f, --fullPage          When true, takes a screenshot of the full scrollable page.
+                          Defaults: false.
+
+  --noheadless            Allow disabling headless mode.
+                          Default: false
+
+  -?, --help              This help
 ```
 
 ## See also
 
-- [puppeteer-trace-cli](https://www.npmjs.com/package/puppeteer-trace-cli)  
+- [puppeteer-trace-cli](https://www.npmjs.com/package/puppeteer-trace-cli)
   Simple wrapper around [Puppeteer](https://github.com/GoogleChrome/puppeteer) to trace webpage from command line.

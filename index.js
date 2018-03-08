@@ -10,7 +10,7 @@ const t         = '%s';
 const argsDef = [
   { name: 'list',     alias: 'l', type: String,  description: 'File path that contains a list of urls.' + EOL, defaultOption: false },
   { name: 'url',      alias: 'u', type: String,  description: 'URL to navigate page to. The url should include scheme, e.g. https://.' + EOL, defaultOption: true },
-  { name: 'output',   alias: 'o', type: String,  description: 'The file path to save the image to. If path is a relative path, then it is resolved relative to current working directory. If no path is provided, the image won\'t be saved to the disk.' + EOL },
+  { name: 'output',   alias: 'o', type: String,  description: 'The file path to save the image to. If path is a relative path, then it is resolved relative to current working directory. If using `--list`, put `%s` in your filename and it will be replaced with the index. If not provided, the `_${index}` will be added to the end of the filename. If no path is provided, the image won\'t be saved to the disk.' + EOL },
   { name: 'selector', alias: 's', type: String,  description: 'A CSS selector of an element to wait for. \n[italic]{Default: body}' + EOL },
   { name: 'type',     alias: 't', type: String,  description: 'Specify screenshot type, can be either jpeg or png. \n[italic]{Default: png}' + EOL },
   { name: 'quality',  alias: 'q', type: Number,  description: 'The quality of the image, between 0-100. Not applicable to png images.' + EOL },
@@ -27,7 +27,6 @@ const argsDef = [
 const args  = require('command-line-args')(argsDef);
 const usage = require('command-line-usage')({ header: 'Headless screenshot with Puppeteer', optionList: argsDef });
 
-let count = 0;
 async function doCapture({
   url,
   output,
@@ -59,8 +58,13 @@ async function doCapture({
     output  = output === '-' ? undefined : output;
     type    = type === 'jpg' ? 'jpeg' : type;
 
-    if (output.indexOf(t) > -1) {
-      output = output.replace(t, count++);
+    if (i !== undefined) {
+      if (output.indexOf(t) > -1) {
+        output = output.replace(t, i);
+      } else {
+        // TODO, add this before the extension
+        // output += `_${i}`;
+      }
     }
 
     await page.waitFor(delay);

@@ -18,7 +18,7 @@ npm i [-g] puppeteer-screenshot-cli
 puppeteer-screenshot --url 'http://perdu.com' --selector 'h1' --output ./perdu.jpg
 puppeteer-screenshot -u 'http://perdu.com' -s 'body' -o - > /tmp/perdu.jpg
 puppeteer-screenshot 'http://perdu.com' > perdu.jpg
-
+puppeteer-screenshot -l myfile.csv -o 'screenshot-%s.png' -f -w 1200 --noheadless --scroll
 ```
 
 ### Options
@@ -31,8 +31,10 @@ Headless screenshot with Puppeteer
   -u, --url string        URL to navigate page to. The url should include scheme, e.g. https://.
 
   -o, --output string     The file path to save the image to. If path is a relative path, then it is
-                          resolved relative to current working directory. If no path is provided, the
-                          image won't be saved to the disk.
+                          resolved relative to current working directory. If using `--list`, put `%s`
+                          in your filename and it will be replaced with the index. If not provided, the
+                          `_${index}` will be added to the end of the filename. If no path is
+                          provided, the image won't be saved to the disk.
 
   -s, --selector string   A CSS selector of an element to wait for.
                           Default: body

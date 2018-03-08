@@ -60,7 +60,7 @@ async function doCapture({
 
     if (i !== undefined) {
       if (output.indexOf(t) > -1) {
-        output = output.replace(t, i);
+        output = output.replace(t, url.replace(/(http(s?):\/\/)/g, '').replace(/\//g, '_'));
       } else {
         // TODO, add this before the extension
         // output += `_${i}`;
@@ -152,7 +152,7 @@ async function doCapture({
   // if (i === len - 1 || i === undefined) {
   await browser.close();
   // }
-  process.stdout.write(chalk.green(' ✓') + EOL);
+  process.stdout.write(chalk.green(' ✓ ') + chalk.gray(i === undefined ? '' : i) + EOL);
 }
 
 async function start () {

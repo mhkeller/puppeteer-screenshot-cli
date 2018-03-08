@@ -21,7 +21,6 @@
     "chalk": "^2.3.2",
     "command-line-args": "~5.0.2",
     "command-line-usage": "~4.1.0",
-    "indian-ocean": "^3.0.2",
     "puppeteer": "~1.0.0"
   },
   "scripts": {
